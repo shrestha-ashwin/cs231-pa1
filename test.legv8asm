@@ -1,0 +1,29 @@
+
+
+//C Code:
+//int max (int *a, int size){
+//    int i, largest;
+//    largest = 0;
+//    for (i =0; i<size; i++)
+//        a[i] = i;
+//}
+
+
+
+
+
+//X0 = array a, X1 = size, X10 = i, X11= temp, X9 = largest
+array: 
+ADD X9, XZR, XZR // largest =0
+ADD X10, XZR, XZR // i =0
+top:
+SUB X11, X10, X1 // tmp = i - size
+CBZ X11, end
+LSL X11, X10, #3 // tmp = i * 8
+ADD X11, X11, X0 // tmp = *a[i]
+LDUR X11, [X11, #0] // tmp = a[i]
+ADDI X10, X10, #1 // i++
+B top
+end:
+BR LR
+

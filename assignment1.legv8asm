@@ -4,29 +4,30 @@
 // Main Procedure
 
 
-ADDI X1, X1, #6
-ADDI X27, X27, #8 // An integer takes 8 Bytes
-MUL X26, X1, X27  // For an array we need to allocate 8 bytes * number of elements
+//ADDI X1, X1, #6
+//ADDI X27, X27, #8 // An integer takes 8 Bytes
+//MUL X26, X1, X27  // For an array we need to allocate 8 bytes * number of elements
 
 
-SUB X28, X28, X26 // Allocating space for the number of registers we intend to use
-LDUR X0, [X28, #0]
+//SUB X28, X28, X26 // Allocating space for the number of registers we intend to use
 
-STUR X19, [X28, #0]
-STUR X20, [X28, #8]
-STUR X21, [X28, #16]
-STUR X22, [X28, #24]
-STUR X23, [X28, #32]
-STUR X24, [X28, #40]
 
-BL fill
+//STUR X19, [X28, #0]
+//STUR X20, [X28, #8]
+//STUR X21, [X28, #16]
+//STUR X22, [X28, #24]
+//STUR X23, [X28, #32]
+//STUR X24, [X28, #40]
+//LDUR X0, [X28, #0]
 
-PRNT X19
-PRNT X20
-PRNT X21
-PRNT X22
-PRNT X23
-PRNT X24
+//BL fill
+
+//PRNT X19
+//PRNT X20
+//PRNT X21
+//PRNT X22
+//PRNT X23
+//PRNT X24
 
 
 
@@ -40,43 +41,56 @@ PRNT X24
 // NEEDS TESTING
 //X0 = array a, X1 = Size of array s
 
-fill:   
-ADDI X9, X9, #0 //X9 = i 
+//fill:   
+//ADDI X9, X9, #0 //X9 = i 
 
-SUBIS XZR, X1, #2 // Sets flag on XZR from X1 - 2
-B.LT loop_end // Jump to end of loop
+//SUBIS XZR, X1, #2 // Sets flag on XZR from X1 - 2
+//B.LT loop_end // Jump to end of loop
 
-ADDI X10, X1, #1
-LSR X10, X10, #1 // X11 = (s + 1)/2
-LSR X11, X1, #1 // X10 = s/2
+//ADDI X10, X1, #1
+//LSR X10, X10, #1 // X11 = (s + 1)/2
+//LSR X11, X1, #1 // X10 = s/2
 
 
-loop:
+//loop:
 
-SUBS XZR, X9, X11 // check if i >= s/2
-B.GE loop_end
+//SUBS XZR, X9, X11 // check if i >= s/2
+//B.GE loop_end
 
-LSL X12, X9, #1 // X12 = i * 2
+//LSL X12, X9, #1 // X12 = i * 2
 
-SUB X13, X10, X9 // X13 = (s+1)/2 - i 
-SUBI X13, X13, #1 // X13 = X13 - 1
-LSL X13, X13, #3
-STUR X12, [X0, X13] // a[((s + 1) / 2) - (i + 1)] = i * 2
+//SUB X13, X10, X9 // X13 = (s+1)/2 - i 
+//SUBI X13, X13, #1 // X13 = X13 - 1
+//LSL X13, X13, #3
+//PRNT X13
+//STUR X12, [X0, X13] // a[((s + 1) / 2) - (i + 1)] = i * 2
 
-ADDI X14, X12, #1 // i * 2 + 1
-ADD X15, X10, X9 // (s+1/2) + i 
-LSL X15, X15, #3 // Convert integer to byte offset
-STUR X14, [X0, X15] // a[(s+1/2)+i] = i*2+1 
+//ADDI X14, X12, #1 // i * 2 + 1
+//ADD X15, X10, X9 // (s+1/2) + i 
+//LSL X15, X15, #3 // Convert integer to byte offset
+//PRNT X15
+//STUR X14, [X0, X15] // a[(s+1/2)+i] = i*2+1 
 
-ADDI X9, X9, #1 // i++
-B loop 
+//ADDI X9, X9, #1 // i++
+//B loop 
 
-loop_end:
-ANDIS X16, X1, #1 // check if (s & 1)
-B.EQ endFill // if even skip
+//loop_end:
+//ANDIS X16, X1, #1 // check if (s & 1)
+//B.EQ endFill // if even skip
 
-SUBI X17, X1, #1 // X17 = s-1
-STUR X17, [X0, #0] // a[0] = s - 1
+//SUBI X17, X1, #1 // X17 = s-1
+//STUR X17, [X0, #0] // a[0] = s - 1
 
-endFill:
-BR LR
+//endFill:
+//BR LR
+
+
+
+//swap Procedure
+// X0 = *a 
+// X1 = *b
+swap:
+LDUR X11, [X0, #0] // Load value of *a in X11
+LDUR X12, [X1, #0]  // Load value of *b in X12
+STUR X12 [X0, #0] // Store Value of X12 in *a
+STUR X11 [X1, #0]  // Store value of X11 in *b
