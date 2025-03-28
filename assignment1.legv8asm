@@ -90,14 +90,51 @@ fill:
     ADD X9, XZR, XZR // i = 0
 
     //Need:
-    // s-2, s/2, s+1, i+1, i*2, i*2+1, (s+1)/2
+    // s-2, s/2, s+1, (s+1)/2
     LSR X11, X1, #1 // X11 = s/2
     ADDI X12, X1, #1 // X12 = s + 1
-    ADDI X13, X9, #1 // X13 = i + 1
+    LSR X13, X12, #1 // X13 = (s+1)/2
 
-    
+
     SUBIS X10, X1, #2 // tmp = s - 2
     B.MI skip // if s < 2 skip 
+
+
+
+    loop:
+        SUBI X10, X9, X11 // tmp = i - s/2
+        CBZ X10, loop_end // if (i == s/2) break
+
+        //need:
+        //i+1, i*2, i*2+1,
+        ADDI X14, X9, #1 // X14 = i + 1
+        LSL X15, X9, #1// X15 = i * 2
+        ADDI X16, X15, #1 // X16 = i * 2 + 1
+
+        //((s + 1) / 2) - (i + 1)
+        SUB X17, X13, X14
+        LSL X10, X17, #3 // tmp = X17 * 8
+
+        ADD X10, X0, X10 // tmp = & a[X10]
+        LDUR X20, [X10, #0] // val = a[X10]
+        ADD X20, X15, XZR // val= i * 2
+        STUR X20, [X10, #0] // a[((s + 1) / 2) - (i + 1)] = val;
+
+        // ((s + 1) / 2) + i
+        ADD X17, X13, X9
+        LSL X10, X17, #3 // tmp = X17 * 8
+
+        ADD X10, X0, X10 // tmp = & a[X10]
+        LDUR X20, [X10, #0] // val = & a[X10]
+        ADD X20, X16, XZR // val = i * 2
+        STUR X20, [X10, #0] // a[((s + 1) / 2) + i] = val;
+
+
+        ADDI X9, X9, #1 // i++
+
+    loop_end:
+
+
 
 
 
