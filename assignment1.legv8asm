@@ -85,12 +85,32 @@
 //BR LR
 
 
+//X0 = *a , X1 = s
+fill:
+    ADD X9, XZR, XZR // i = 0
+
+    //Need:
+    // s-2, s/2, s+1, i+1, i*2, i*2+1, (s+1)/2
+    LSR X11, X1, #1 // X11 = s/2
+    ADDI X12, X1, #1 // X12 = s + 1
+    ADDI X13, X9, #1 // X13 = i + 1
+
+    
+    SUBIS X10, X1, #2 // tmp = s - 2
+    B.MI skip // if s < 2 skip 
+
+
+
+    skip:
+
+
+
 
 //swap Procedure
 // X0 = *a 
 // X1 = *b
 swap:
-LDUR X11, [X0, #0] // Load value of *a in X11
-LDUR X12, [X1, #0]  // Load value of *b in X12
-STUR X12 [X0, #0] // Store Value of X12 in *a
-STUR X11 [X1, #0]  // Store value of X11 in *b
+    LDUR X11, [X0, #0] // Load value of *a in X11
+    LDUR X12, [X1, #0]  // Load value of *b in X12
+    STUR X12 [X0, #0] // Store Value of X12 in *a
+    STUR X11 [X1, #0]  // Store value of X11 in *b
